@@ -3,27 +3,38 @@ import {useState} from "react";
 import InterestSection from "../components/interestSection";
 import SettingsSection from "../components/settingsSection";
 
-const MainPage = () =>{
-    const [selectedTab, setSelectedTab] = useState('profile');
-
-    function handleButtonClick(where){
-        setSelectedTab(where);
+const MainPage = () => {
+    const [selectedTab, setSelectedTab] = useState(TABS.PROFILE);
+  
+    function handleButtonClick(tabKey) {
+      setSelectedTab(tabKey);
     }
-
+  
     return (
-        <div style={{padding: '20px'}}>
-            {selectedTab === 'profile' && (
-                <ProfileSection handleButtonClickFunction={handleButtonClick}/>
-            )}
-            {selectedTab === 'interests' && (
-                <InterestSection handleButtonClickFunction={handleButtonClick}/>
-            )}
-            {selectedTab === 'settings' && (
-                <SettingsSection handleButtonClickFunction={handleButtonClick}/>
-            )}
-        </div> 
+      <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
+        <h1 style={{ color: '#333', marginBottom: '20px' }}>Multi-Tab Form</h1>
+        
+        {selectedTab === TABS.PROFILE && (
+          <ProfileSection 
+            handleButtonClickFunction={handleButtonClick} 
+            currentTab={selectedTab} 
+          />
+        )}
+        {selectedTab === TABS.INTERESTS && (
+          <InterestSection 
+            handleButtonClickFunction={handleButtonClick} 
+            currentTab={selectedTab} 
+          />
+        )}
+        {selectedTab === TABS.SETTINGS && (
+          <SettingsSection 
+            handleButtonClickFunction={handleButtonClick} 
+            currentTab={selectedTab} 
+          />
+        )}
+      </div>
     );
-}
+  };
 
 export default MainPage;
 

@@ -1,56 +1,55 @@
 import { useState } from "react";
 import Tabs from "./tabs";
+import { useState } from "react";
 
-const InterestSection = ({handleButtonClickFunction}) => {
-    const [selectedInterest, setSelectedInterest] = useState("");
+const InterestSection = ({ handleButtonClickFunction, currentTab }) => {
+  const savedInterest = getFromStorage(STORAGE_KEYS.INTERESTS);
+  const [selectedInterest, setSelectedInterest] = useState(savedInterest || "");
 
-    function handleRadioChange(e) {
-        setSelectedInterest(e.target.value);
+  function onSubmitHandler(e) {
+    e.preventDefault();
+    if (!selectedInterest) {
+      alert('Select at least one option to proceed!');
+      return;
     }
+    
+    saveToStorage(STORAGE_KEYS.INTERESTS, selectedInterest);
+    handleButtonClickFunction(TABS.SETTINGS);
+  }
 
-    function onSubmitHandler(e){
-        e.preventDefault();
-        if(!selectedInterest){
-            alert('Select aleast one option to proceed !!')
-        } else {
-            localStorage.setItem("Interest", JSON.stringify(selectedInterest));
-            console.log(JSON.parse(localStorage.getItem("Interest")));
-            handleButtonClickFunction("settings");
-        }
-    }
+  // help for the radio options - make it easily extendable
+  const interestOptions = [
+    { value: 'sports', label: 'Sports' },
+    { value: 'music', label: 'Music' },
+    { value: 'reading', label: 'Reading' } // Easy to add more
+  ];
 
-    return (
-        <>
-        <Tabs handleButtonClickFunction={handleButtonClickFunction}/>
-        <div style={{ border: 'solid 1px black', padding: "12px", maxWidth: "650px" }}>
-            <h3>Select your interest</h3>
-            <form style={{ display: 'flex', flexDirection: 'column', gap: 10 }} onSubmit={onSubmitHandler}>
-                <label>
-                    <input
-                        type="radio"
-                        name="interest"
-                        value="sports"
-                        checked={selectedInterest === "sports"}
-                        onChange={handleRadioChange}
-                    />
-                    Sports
-                </label>
-                <label>
-                    <input
-                        type="radio"
-                        name="interest"
-                        value="music"
-                        checked={selectedInterest === "music"}
-                        onChange={handleRadioChange}
-                    />
-                    Music
-                </label>
-                <button type="submit">Save & next</button>
-            </form>
-        </div>
-        </>
-        
-    );
+  return (
+    <>
+      <Tabs handleButtonClickFunction={handleButtonClickFunction} currentTab={currentTab} />
+      <div style={{ border: '1px solid black', padding: "12px", maxWidth: "650px" }}>
+        <h3>Select your interest</h3>
+        <form style={{ display: 'flex', flexDirection: 'column', gap: 10 }} onSubmitHandler={onSubmitHandler}>
+          {interestOptions.map(option => (
+            <label key={option.value}>
+              <input
+                type="radio"
+                name="interest"
+                value={option.value}
+                checked={selectedInterest === option.value}
+                onChange={(e) => setSelectedInterest(e.target.value)}
+                style={{ marginRight: '8px' }}
+              />
+              {option.label}
+            </label>
+          ))}
+          <button type="submit" style={{ padding: '10px', backgroundColor: '#007bff', color: 'white', border: 'none' }}>
+            Save & Next
+          </button>
+        </form>
+      </div>
+    </>
+  );
 };
 
 export default InterestSection;
